@@ -1,0 +1,94 @@
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.models import User
+from django.contrib import messages
+# Create your views here.
+
+
+def success_page(request):
+
+    return render(request, 'accounts/success.html')
+
+def index(request):
+
+    return render(request, 'accounts/home.html')
+
+
+def register(request):
+
+    if request.method == 'POST':
+
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password == confirm_password:
+
+            if User.objects.filter(username=username).exists():
+
+                messages.info(request, "Username already taken!")
+                return redirect('register')
+
+            elif User.objects.filter(email=email).exists():
+
+                messages.info(request, "Email already taken!")
+                return redirect('register')
+
+            else:
+                
+                user = User.objects.create(
+                    username=username,
+                    password=password,
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name
+                )
+                user.save()
+
+                return redirect('success_page')
+
+        else:
+            messages.info(request, "Passwords are not matching!")
+            return redirect('register')
+
+
+    return render(request, 'accounts/register.html')
+
+
+def login(request):
+
+    if request.method == 'POST':
+
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username, password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home.html')
+        else:
+            pass
+
+    return render(request, 'accounts/login.html')
+
+
+def view_user_profile(request):
+
+    user = User.objects.get(request.user)
+    context = {'user': user}
+
+    return render(request, 'accounts/profile.html', context)
+
+
+def delete_user(request, userid):
+    pass
+
+
+def logout(request):
+
+    logout(request)
+
+    return redirect('home')

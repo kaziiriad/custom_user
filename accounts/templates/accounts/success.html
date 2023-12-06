@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Welcome!
+{% endblock %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+    
+        <div class="container card col-md-6">
+
+            <h1>
+                Hi, {{ user.first_name }}!
+            </h1>
+            <p class="text-start">
+                Welcome to our customized login system. 
+            </p>
+
+
+        </div>
+    
+    {% endif %}
+
+{% endblock %}
