@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'guest_user',
+
 ]
 
 MIDDLEWARE = [
@@ -108,6 +110,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+AUTHENTICATION_BACKENDS = [
+   "django.contrib.auth.backends.ModelBackend",
+   # it should be the last entry to prevent unauthorized access
+   "guest_user.backends.GuestBackend",
+]
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -129,3 +138,27 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = '/login/'
+
+LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/'
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+SESSION_COOKIE_AGE = 1800
+
+#guest session time - sec
+MAX_AGE = 900
+
+#convert form - guest to user
+CONVERT_FORM = 'accounts_manager.forms.NewUserForm'
+
+# converted users redirect here
+#CONVERT_REDIRECT_URL = '/'
+
+# guest name generator
+NAME_GENERATOR = 'guest_user.functions.generate_numbered_username'
+
+GUEST_USER_NAME_SUFFIX_DIGITS = 6
